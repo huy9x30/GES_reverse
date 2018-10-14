@@ -1,4 +1,5 @@
 import utils.DomainConstraint;
+
 /**
  * @author Hydyrow Bayram
  *
@@ -23,17 +24,17 @@ import utils.DomainConstraint;
  *  mutable(price) = true /\ optional(price) = false /\ min(price) = 1
  *
  */
-public class Hostel {
+public class Hostel implements Comparable<Hostel> {
     private static int autoId = 1;
     @DomainConstraint(type = "int", mutable = false, optional = false, min = 1)
     private int id;
-    @DomainConstraint(type = "String", mutable = true, optional = false, length = 70)
+    @DomainConstraint(type = "String", optional = false, length = 70)
     private String name;
-    @DomainConstraint(type = "String", mutable = true, optional = false, length = 150)
+    @DomainConstraint(type = "String", optional = false, length = 150)
     private String address;
-    @DomainConstraint(type = "int", mutable = true, optional = false, min = 3, max = 14)
+    @DomainConstraint(type = "int", optional = false, min = 3, max = 14)
     private int noRooms;
-    @DomainConstraint(type = "float", mutable = true, optional = false, min = 1)
+    @DomainConstraint(type = "float", optional = false, min = 1)
     private float price;
 
     /**
@@ -49,7 +50,7 @@ public class Hostel {
      *   initialise this as object Hostel:<id, name, address, noRooms, price>,
      *      where id = autoId
      */
-    public Hostel(String name, String address, int noRooms, float price) {
+    public Hostel(String name, String address, int noRooms, float price) throws IllegalArgumentException {
         if(validate(name, address, noRooms, price)) {
             this.id = autoId;
             this.name = name;
@@ -57,6 +58,8 @@ public class Hostel {
             this.noRooms = noRooms;
             this.price = price;
             autoId++;
+        } else {
+            throw new IllegalArgumentException("Hostel constructor: illegal argument");
         }
     }
 
@@ -143,8 +146,12 @@ public class Hostel {
      *      else
      *          return false
      */
-    public boolean validateName(String name) {
-        return (name != null) && (name.length() <= 70);
+    public boolean validateName(String name) throws IllegalArgumentException {
+        if ((name != null) && (name.length() <= 70)) {
+            return true;
+        } else {
+            throw new IllegalArgumentException("Hostel.validateName: illegal argument");
+        }
     }
 
     /**
@@ -154,8 +161,12 @@ public class Hostel {
      *      else
      *          return false
      */
-    public boolean validateAddress (String address) {
-        return (address != null) && (address.length() <= 150);
+    public boolean validateAddress (String address) throws IllegalArgumentException {
+        if ((address != null) && (address.length() <= 150)) {
+            return true;
+        } else {
+            throw new IllegalArgumentException("Hostel.validateAddress: illegal argument");
+        }
     }
 
     /**
@@ -165,8 +176,12 @@ public class Hostel {
      *      else
      *          return false
      */
-    public boolean validateNoRooms(int noRooms) {
-        return (noRooms >= 3) && (noRooms <= 14);
+    public boolean validateNoRooms(int noRooms) throws IllegalArgumentException {
+        if((noRooms >= 3) && (noRooms <= 14)) {
+            return true;
+        } else {
+            throw new IllegalArgumentException("Hostel.validateNoRooms: illegal argument");
+        }
     }
 
     /**
@@ -176,8 +191,12 @@ public class Hostel {
      *      else
      *          return false
      */
-    public boolean validatePrice(float price) {
-        return (price >= 1);
+    public boolean validatePrice(float price) throws IllegalArgumentException {
+        if (price >= 1) {
+            return true;
+        } else {
+            throw new IllegalArgumentException("Hostel constructor: illegal argument");
+        }
     }
 
     /**
@@ -188,8 +207,12 @@ public class Hostel {
      *          return false
      *
      */
-    public boolean validate(String name, String address, int noRooms, float price) {
-        return (validateName(name) && validateAddress(address) && validateNoRooms(noRooms) && validatePrice(price));
+    public boolean validate(String name, String address, int noRooms, float price) throws IllegalArgumentException {
+        if (validateName(name) && validateAddress(address) && validateNoRooms(noRooms) && validatePrice(price)) {
+            return true;
+        } else {
+            throw new IllegalArgumentException("Hostel.validate: illegal argument");
+        }
     }
 
     /**
@@ -199,5 +222,11 @@ public class Hostel {
     @Override
     public String toString() {
         return "Hostel:<\"" + id + "\",\"" + name + "\",\"" + address + "\",\"" + noRooms +  "\",\"" + price +"\">";
+    }
+
+    public int compareTo(Hostel hostel) {
+        if (this.price > hostel.price) return 1;
+        if (this.price < hostel.price) return -1;
+        else                           return 0;
     }
 }
