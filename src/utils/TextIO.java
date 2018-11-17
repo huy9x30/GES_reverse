@@ -1,19 +1,29 @@
-package utils;
+package utils; 
 
-import javax.swing.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Reader;
 import java.util.IllegalFormatException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 /**
- * utils.TextIO provides a set of static methods for reading and writing text.  By default, it reads
+ * TextIO provides a set of static methods for reading and writing text.  By default, it reads
  * from standard input and writes to standard output, but it is possible to redirect the input
  * and output to files or to other input and output streams.  When the standard input and output
  * streams are being used, the input methods will not produce an error; instead, the user is
  * repeatedly prompted for input until a legal input is entered.  (If standard input has been
  * changed externally, as by file redirection on the command line, this is not a reasonable
- * behavior; to handle this case, utils.TextIO will give up after 10 consecutive illegal inputs and
+ * behavior; to handle this case, TextIO will give up after 10 consecutive illegal inputs and
  * will throw an IllegalArgumentException.)  For the most part, any other
  * error will be translated into an IllegalArguementException.
  * <p>For writing to standard output, the output methods in this class pretty much
@@ -24,14 +34,14 @@ import java.util.regex.Pattern;
  * static methods, and none of the methods throw exceptions that would require try...catch statements.
  * Also for this reason, all exceptions are converted into IllegalArgumentExceptions, even when this
  * exception type doesn't really make sense.
- * <p>This class requires Java 5.0 or higher. (A previous version of utils.TextIO required only Java 1.1;
+ * <p>This class requires Java 5.0 or higher. (A previous version of TextIO required only Java 1.1;
  * this version should work with any source code that used the previous version, but it has some new
  * features, including the type of formatted output that was introduced in Java 5 and the ability to
  * use files and streams.)
  */
 public class TextIO {
 
-   /* Modified November 2007 to empty the utils.TextIO input buffer when switching from one
+   /* Modified November 2007 to empty the TextIO input buffer when switching from one
     * input source to another. This fixes a bug that allows input from the previous input
     * source to be read after the new source has been selected.
     */
@@ -332,7 +342,7 @@ public class TextIO {
    
 
    /**
-    * If utils.TextIO is currently reading from a file, then the return value is the name of the file.
+    * If TextIO is currently reading from a file, then the return value is the name of the file.  
     * If the class is reading from standard input or from a stream, then the return value is null.
     */
    public static String getInputFileName() {
@@ -341,7 +351,7 @@ public class TextIO {
    
 
    /**
-    * If utils.TextIO is currently writing to a file, then the return value is the name of the file.
+    * If TextIO is currently writing to a file, then the return value is the name of the file.  
     * If the class is writing to standard output or to a stream, then the return value is null.
     */
    public static String getOutputFileName() {
@@ -426,12 +436,12 @@ public class TextIO {
     */
    public static void putf(String format, Object... items) {
       if (format == null)
-         throw new IllegalArgumentException("Null format string in utils.TextIO.putf() method.");
+         throw new IllegalArgumentException("Null format string in TextIO.putf() method.");
       try {
          out.printf(format,items);
       }
       catch (IllegalFormatException e) {
-         throw new IllegalArgumentException("Illegal format string in utils.TextIO.putf() method.");
+         throw new IllegalArgumentException("Illegal format string in TextIO.putf() method.");
       }
       out.flush();
       if (out.checkError())
@@ -473,7 +483,7 @@ public class TextIO {
    /**
     * Returns the next character in the current input source, without actually removing that
     * character from the input.  The character can be a whitespace character and can be the
-    * end-of-file character (specified by the constant utils.TextIO.EOF).An end-of-line is always returned
+    * end-of-file character (specified by the constant TextIO.EOF).An end-of-line is always returned 
     * as the character '\n', even when the actual end-of-line in the input source is something else, 
     * such as '\r' or "\r\n".  This method never causes an error.
     */
@@ -829,26 +839,26 @@ public class TextIO {
    
    private static JFileChooser fileDialog; // Dialog used by readUserSelectedFile() and writeUserSelectedFile()
    
-   private final static BufferedReader standardInput = new BufferedReader(new InputStreamReader(System.in));  // wraps standard input stream
-   private final static PrintWriter standardOutput = new PrintWriter(System.out);  // wraps standard output stream
+   private final static BufferedReader standardInput = new BufferedReader(new InputStreamReader(java.lang.System.in));  // wraps standard input stream
+   private final static PrintWriter standardOutput = new PrintWriter(java.lang.System.out);  // wraps standard output stream
 
    private static BufferedReader in = standardInput;  // Stream that data is read from; the current input source.
    private static PrintWriter out = standardOutput;   // Stream that data is written to; the current output destination.
-
+   
    private static boolean readingStandardInput = true;
    private static boolean writingStandardOutput = true;
-
+   
    private static int inputErrorCount;  // Number of consecutive errors on standard input; reset to 0 when a successful read occurs.
    private static int outputErrorCount;  // Number of errors on standard output since it was selected as the output destination.
-
+   
    private static Matcher integerMatcher;  // Used for reading integer numbers; created from the integer Regex Pattern.
    private static Matcher floatMatcher;   // Used for reading floating point numbers; created from the floatRegex Pattern.
    private final static Pattern integerRegex = Pattern.compile("(\\+|-)?[0-9]+");
    private final static Pattern floatRegex = Pattern.compile("(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?");
-
+   
    private static String buffer = null;  // One line read from input.
    private static int pos = 0;           // Position of next char in input line that has not yet been processed.
-
+   
    private static String readRealString() {   // read chars from input following syntax of real numbers
       skipWhitespace();
       if (lookChar() == EOF)
@@ -861,10 +871,10 @@ public class TextIO {
          pos = floatMatcher.end();
          return str;
       }
-      else
+      else 
          return null;
    }
-
+   
    private static String readIntegerString() {  // read chars from input following syntax of integers
       skipWhitespace();
       if (lookChar() == EOF)
@@ -877,10 +887,10 @@ public class TextIO {
          pos = integerMatcher.end();
          return str;
       }
-      else
+      else 
          return null;
    }
-
+   
    private static long readInteger(long min, long max) {  // read long integer, limited to specified range
       long x=0;
       while (true) {
@@ -891,7 +901,7 @@ public class TextIO {
          }
          else {
             String str = s.toString();
-            try {
+            try { 
                x = Long.parseLong(str);
             }
             catch (NumberFormatException e) {
@@ -910,8 +920,8 @@ public class TextIO {
       inputErrorCount = 0;
       return x;
    }
-
-
+   
+   
    private static void errorMessage(String message, String expecting) {  // Report error on input.
       if (readingStandardInput && writingStandardOutput) {
              // inform user of error and force user to re-enter.
@@ -934,13 +944,13 @@ public class TextIO {
             throw new IllegalArgumentException("Too many input consecutive input errors on standard input.");
       }
       else if (inputFileName != null)
-         throw new IllegalArgumentException("Error while reading from file \"" + inputFileName + "\":\n"
+         throw new IllegalArgumentException("Error while reading from file \"" + inputFileName + "\":\n" 
                + message + "\nExpecting " + expecting);
       else
-         throw new IllegalArgumentException("Error while reading from inptu stream:\n"
+         throw new IllegalArgumentException("Error while reading from inptu stream:\n" 
                + message + "\nExpecting " + expecting);
    }
-
+   
    private static char lookChar() {  // return next character from input
       if (buffer == null || pos > buffer.length())
          fillBuffer();
@@ -948,10 +958,10 @@ public class TextIO {
          return EOF;
       else if (pos == buffer.length())
          return '\n';
-      else
+      else 
          return buffer.charAt(pos);
    }
-
+   
    private static char readChar() {  // return and discard next character from input
       char ch = lookChar();
       if (buffer == null) {
@@ -963,7 +973,7 @@ public class TextIO {
       pos++;
       return ch;
    }
-
+      
    private static void fillBuffer() {    // Wait for user to type a line and press return,
       try {
          buffer = in.readLine();
@@ -980,14 +990,14 @@ public class TextIO {
       floatMatcher = null;
       integerMatcher = null;
    }
-
+   
    private static void emptyBuffer() {   // discard the rest of the current line of input
       buffer = null;
    }
-
+   
    private static void outputError(String message) {  // Report an error on output.
       if (writingStandardOutput) {
-        System.err.println("Error occurred in utils.TextIO while writing to standard output!!");
+        java.lang.System.err.println("Error occurred in TextIO while writing to standard output!!");
          outputErrorCount++;
          if (outputErrorCount >= 10) {
             outputErrorCount = 0;
@@ -1003,4 +1013,4 @@ public class TextIO {
       }
    }
       
-} // end of class utils.TextIO
+} // end of class TextIO

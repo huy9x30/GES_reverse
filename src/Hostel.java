@@ -25,17 +25,16 @@ import utils.DomainConstraint;
  *
  */
 public class Hostel implements Comparable<Hostel> {
-    private static int autoId = 1;
     @DomainConstraint(type = "int", mutable = false, optional = false, min = 1)
-    private int id;
+    protected int id;
     @DomainConstraint(type = "String", optional = false, length = 70)
-    private String name;
+    protected String name;
     @DomainConstraint(type = "String", optional = false, length = 150)
-    private String address;
+    protected String address;
     @DomainConstraint(type = "int", optional = false, min = 3, max = 14)
-    private int noRooms;
+    protected int noRooms;
     @DomainConstraint(type = "float", optional = false, min = 1)
-    private float price;
+    protected float price;
 
     /**
      * @effects
@@ -47,17 +46,16 @@ public class Hostel implements Comparable<Hostel> {
 
     /**
      *  @effects
-     *   initialise this as object Hostel:<id, name, address, noRooms, price>,
+     *   initialize this as object Hostel:<id, name, address, noRooms, price>,
      *      where id = autoId
      */
-    public Hostel(String name, String address, int noRooms, float price) throws IllegalArgumentException {
-        if(validate(name, address, noRooms, price)) {
-            this.id = autoId;
+    public Hostel(int id, String name, String address, int noRooms, float price) throws IllegalArgumentException {
+        if(validate(id, name, address, noRooms, price)) {
+            this.id = id;
             this.name = name;
             this.address = address;
             this.noRooms = noRooms;
             this.price = price;
-            autoId++;
         } else {
             throw new IllegalArgumentException("Hostel constructor: illegal argument");
         }
@@ -69,6 +67,15 @@ public class Hostel implements Comparable<Hostel> {
      */
     public int getId() {
         return id;
+    }
+    
+     /**
+     *  @effects
+     *      set this.id = id
+     */
+    public void setId(int id) {
+        if (validateId(id))
+            this.id = id;
     }
 
     /**
@@ -146,12 +153,8 @@ public class Hostel implements Comparable<Hostel> {
      *      else
      *          return false
      */
-    public boolean validateName(String name) throws IllegalArgumentException {
-        if ((name != null) && (name.length() <= 70)) {
-            return true;
-        } else {
-            throw new IllegalArgumentException("Hostel.validateName: illegal argument");
-        }
+    public boolean validateName(String name) {
+        return (name != null) && (name.length() <= 70);
     }
 
     /**
@@ -161,12 +164,8 @@ public class Hostel implements Comparable<Hostel> {
      *      else
      *          return false
      */
-    public boolean validateAddress (String address) throws IllegalArgumentException {
-        if ((address != null) && (address.length() <= 150)) {
-            return true;
-        } else {
-            throw new IllegalArgumentException("Hostel.validateAddress: illegal argument");
-        }
+    public boolean validateAddress (String address) {
+        return (address != null) && (address.length() <= 150);
     }
 
     /**
@@ -176,12 +175,8 @@ public class Hostel implements Comparable<Hostel> {
      *      else
      *          return false
      */
-    public boolean validateNoRooms(int noRooms) throws IllegalArgumentException {
-        if((noRooms >= 3) && (noRooms <= 14)) {
-            return true;
-        } else {
-            throw new IllegalArgumentException("Hostel.validateNoRooms: illegal argument");
-        }
+    public boolean validateNoRooms(int noRooms) {
+       return (noRooms >= 3) && (noRooms <= 14);
     }
 
     /**
@@ -191,12 +186,19 @@ public class Hostel implements Comparable<Hostel> {
      *      else
      *          return false
      */
-    public boolean validatePrice(float price) throws IllegalArgumentException {
-        if (price >= 1) {
-            return true;
-        } else {
-            throw new IllegalArgumentException("Hostel constructor: illegal argument");
-        }
+    public boolean validatePrice(float price) {
+        return price >= 1;
+    }
+    
+     /**
+     *  @effects
+     *      if price is valid
+     *          return true
+     *      else
+     *          return false
+     */
+    public boolean validateId(int id) {
+        return id >= 1;
     }
 
     /**
@@ -207,12 +209,8 @@ public class Hostel implements Comparable<Hostel> {
      *          return false
      *
      */
-    public boolean validate(String name, String address, int noRooms, float price) throws IllegalArgumentException {
-        if (validateName(name) && validateAddress(address) && validateNoRooms(noRooms) && validatePrice(price)) {
-            return true;
-        } else {
-            throw new IllegalArgumentException("Hostel.validate: illegal argument");
-        }
+    public boolean validate(int id, String name, String address, int noRooms, float price) {
+        return validateId(id) && validateName(name) && validateAddress(address) && validateNoRooms(noRooms) && validatePrice(price);
     }
 
     /**
@@ -221,7 +219,12 @@ public class Hostel implements Comparable<Hostel> {
      */
     @Override
     public String toString() {
-        return "Hostel:<\"" + id + "\",\"" + name + "\",\"" + address + "\",\"" + noRooms +  "\",\"" + price +"\">";
+        return "Hostel:[\"id=" + id 
+                + "\",\" name=" + name 
+                + "\",\" address=" + address 
+                + "\",\" no-Rooms=" + noRooms 
+                + "\",\" price=" + price 
+                +"\"]";
     }
 
     public int compareTo(Hostel hostel) {

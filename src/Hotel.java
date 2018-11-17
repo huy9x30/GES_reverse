@@ -22,7 +22,7 @@ public class Hotel extends Hostel {
 
     /**
      * @effects
-     *  initialise an empty object Hotel
+     *  initialize an empty object Hotel
      */
     public Hotel(){
 
@@ -30,11 +30,11 @@ public class Hotel extends Hostel {
 
     /**
      *  @effects
-     *   initialise this as object Hotel:<id, name, address, noRooms, price, noStars>,
+     *   initialize this as object Hotel:<id, name, address, noRooms, price, noStars>,
      *      where id = autoId
      */
-    public Hotel(String name, String address, int noRooms, float price, float noStars) throws IllegalArgumentException {
-        super(name, address, noRooms, price);
+    public Hotel(int id, String name, String address, int noRooms, float price, float noStars) throws IllegalArgumentException {
+        super(id, name, address, noRooms, price);
         if (validateNoStars(noStars)) {
             this.noStars = noStars;
         } else {
@@ -66,11 +66,22 @@ public class Hotel extends Hostel {
      *      else
      *          return false
      */
-    public boolean validateNoStars(float noStars) throws IllegalArgumentException {
-        if ((noStars >=3) && (noStars <= 5)) {
-            return true;
-        } else {
-            throw new IllegalArgumentException("Hostel.validateNoStars: illegal argument");
-        }
+    public boolean validateNoStars(float noStars) {
+        return (noStars >=3) && (noStars <= 5);
+    }
+    
+    /**
+     *  @effects
+     *      return Hotel:<id,name,address,noRooms,price,noStars>
+     */
+    @Override
+    public String toString() {
+        return "Hotel:[\"id=" + id 
+                + "\",\" name=" + name 
+                + "\",\" address=" + address 
+                + "\",\" no-Rooms=" + noRooms 
+                + "\",\" price=" + price
+                + "\",\" no-Stars=" + noStars
+                +"\"]";
     }
 }
